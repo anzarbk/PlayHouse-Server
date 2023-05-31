@@ -11,7 +11,14 @@ const mongoose = require("./database");
 const conn = require("./database");
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://playhousenow.online/"],
+    // orgin:['http://localhost:5173'],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
 const { Server } = require("socket.io");
 
 app.use(express.json());
