@@ -16,7 +16,7 @@ app.use(
     origin: ["https://playhousenow.online/"],
     // orgin:['http://localhost:5173'],
     methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true,
+    // credentials: true,
   })
 );
 const { Server } = require("socket.io");
