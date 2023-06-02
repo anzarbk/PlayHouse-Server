@@ -14,7 +14,7 @@ const app = express();
 app.use(
   cors({
     origin: ["https://playhousenow.online/"],
-    // orgin:['http://localhost:5173'],
+    // orgin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     // credentials: true,
   })

@@ -23,19 +23,19 @@ exports.createTheatre = async (req, res) => {
       pincode: body.pinCode,
     };
     const theatreRedux = await Theatre.create(data);
-    const userRedux = await User.updateOne(
-      { _id: id },
-      {
-        $set: {
-          role: "theatre",
-        },
-      },
-      { new: true, runValidators: true }
-    );
-
+    // const userRedux = await User.updateOne(
+    //   { _id: id },
+    //   // {
+    //   //   $set: {
+    //   //     role: "theatre",
+    //   //   },
+    //   // },
+    //   { new: true, runValidators: true }
+    // );
+    // console.log(userRedux);
     res.json({
       status: "success",
-      userRedux,
+      // userRedux,
       theatreRedux,
     });
   } catch (error) {
@@ -121,8 +121,10 @@ exports.theatreGetData = async (req, res) => {
   }
 };
 exports.getAlltheatre = async (req, res) => {
+  console.log("out");
   try {
     const theatre = await Theatre.find();
+    console.log(theatre);
     res.json({
       status: "success",
       theatre,
@@ -141,28 +143,49 @@ exports.getTheatreOnlyData = async (req, res) => {
   try {
     const theatre = await Theatre.findOne({ _id: id });
     console.log(theatre, "qweqwe");
-    let newTheatre;
-    if (theatre.isBlocked) {
-      newTheatre = await Theatre.findOneAndUpdate(
-        {
-          _id: id,
+    const userId = theatre.user;
+    // let newTheatre;
+    // if (theatre.isBlocked) {
+    const newTheatre = await Theatre.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        isBlocked: !theatre.isBlocked,
+      },
+      { new: true }
+    );
+    const userRedux = await User.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          role: newTheatre.isBlocked ? "user" : "theatre",
         },
-        {
-          isBlocked: false,
-        },
-        { new: true }
-      );
-    } else {
-      newTheatre = await Theatre.findOneAndUpdate(
-        {
-          _id: id,
-        },
-        {
-          isBlocked: true,
-        },
-        { new: true }
-      );
-    }
+      },
+      { new: true, runValidators: true }
+    );
+    console.log(userRedux);
+    // } else {
+    //   newTheatre = await Theatre.findOneAndUpdate(
+    //     {
+    //       _id: id,
+    //     },
+    //     {
+    //       isBlocked: true,
+    //     },
+    //     { new: true }
+    //   );
+    //   const userRedux = await User.updateOne(
+    //     { _id: userId },
+    //     {
+    //       $set: {
+    //         role: "user",
+    //       },
+    //     },
+    //     { new: true, runValidators: true }
+    //   );
+    //   console.log(userRedux);
+    // }
     console.log(newTheatre, "after");
 
     res.json({
@@ -453,6 +476,7 @@ exports.createTicket = async (req, res) => {
         movieTheatre: req.body.movieTheatre,
         movieScreen: req.body.movieScreen,
         movieShowTime: req.body.movieShowTime,
+        movieShowId: showId,
         paymentMethod: "wallet",
         newAmount: req.body.newAmount,
         seatNameArray: req.body.seatNameArray,
@@ -503,6 +527,7 @@ exports.createTicket = async (req, res) => {
         movieTheatre: req.body.movieTheatre,
         movieScreen: req.body.movieScreen,
         movieShowTime: req.body.movieShowTime,
+        movieShowId: showId,
         paymentMethod: "PayPal",
         newAmount: req.body.newAmount,
         seatNameArray: req.body.seatNameArray,
@@ -783,9 +808,11 @@ exports.deleteTicket = async (req, res) => {
       { _id: userId },
       {
         wallet: totalPrice,
-      }
+      },
+      { new: true }
     );
     console.log("user-wallet", user);
+    const deleteTicket = await Ticket.findByIdAndDelete(ticketId);
     const shows = await Show.findOne({ _id: showId });
     // console.log(shows);
     const seat = shows.screen.seatCharter;
@@ -804,14 +831,13 @@ exports.deleteTicket = async (req, res) => {
 
     const show = await Show.findOneAndUpdate(
       { _id: showId },
-      { screen: { seatCharter: seat } }
+      { screen: { seatCharter: seat } },
+      { new: true }
     );
 
     res.json({
       status: "success",
       user,
-      seat,
-      results,
     });
   } catch (error) {
     res.json({
@@ -832,6 +858,53 @@ exports.getTicketList = async (req, res) => {
       res.json({
         status: "success",
         tickets,
+      });
+    }
+  } catch (error) {
+    res.json({
+      status: "failed",
+      error,
+    });
+    console.log(error);
+  }
+};
+exports.getTicket = async (req, res) => {
+  try {
+    const Id = req.params.id;
+    if (Id) {
+      const ticket = await Ticket.findOne({ _id: Id }).populate("movieShowId");
+      console.log(ticket);
+      res.json({
+        status: "success",
+        ticket,
+      });
+    }
+  } catch (error) {
+    res.json({
+      status: "failed",
+      error,
+    });
+    console.log(error);
+  }
+};
+exports.getAdminChart = async (req, res) => {
+  try {
+    const userId = req.user._id.toString();
+    if (userId) {
+      const tickets = await Ticket.find().count();
+      const users = await User.findOne().count();
+      const theatres = await Theatre.findOne().count();
+      const movies = await Movie.findOne().count();
+      const result = [
+        { name: "Tickets", value: tickets },
+        { name: "Users", value: users },
+        { name: "Theatres", value: theatres },
+        { name: "Movies", value: movies },
+      ];
+      console.log(result);
+      res.json({
+        status: "success",
+        result,
       });
     }
   } catch (error) {

@@ -24,6 +24,10 @@ const ticketSchema = new mongoose.Schema(
     movieShowTime: {
       type: String,
     },
+    movieShowId: {
+      type: mongoose.Types.ObjectId,
+      ref: "show",
+    },
     paymentMethod: {
       type: String,
     },

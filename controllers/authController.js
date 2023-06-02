@@ -45,6 +45,30 @@ exports.signup = async (req, res, next) => {
     });
   }
 };
+exports.refreshUser = async (req, res, next) => {
+  try {
+    const body = req.body;
+    console.log(req.body);
+    if (!body.accessToken) {
+      res.json({ status: "failed", message: "Token not found !" });
+      return;
+    }
+    const verified = await FB.verifyToken(body.accessToken);
+    console.log(verified);
+    const user = await User.findOne({ email: verified.email });
+    res.json({
+      status: "success",
+      token: body.accessToken,
+      user,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      status: "error",
+      message: err?.message,
+    });
+  }
+};
 
 exports.login = async (req, res, next) => {
   try {
@@ -63,7 +87,7 @@ exports.login = async (req, res, next) => {
       "-password"
     );
     console.log(user);
-    if (user.isBlocked) {
+    if (user?.isBlocked) {
       return res.json({
         status: "error",
         message: "you were blocked",
