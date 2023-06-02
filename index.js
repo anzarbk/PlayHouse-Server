@@ -33,15 +33,15 @@ app.use("/auth", authRoutes);
 app.use("/admin", checkIsAuth, checkIfAdmin, adminRoutes);
 
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-  },
-});
-io.on("connection", (socket) => {
-  console.log(`user connected: ${socket.id}`);
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:5173",
+//     methods: ["GET", "POST"],
+//   },
+// });
+// io.on("connection", (socket) => {
+//   console.log(`user connected: ${socket.id}`);
+// });
 server.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT} `);
 });
