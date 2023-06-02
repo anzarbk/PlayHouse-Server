@@ -103,7 +103,7 @@ router.patch("/ticket", checkIsAuth, createTicket);
 module.exports = router;
 router.get("/get-tickets", checkIsAuth, getTicketList);
 module.exports = router;
-router.get("/get-ticket/:id", checkIsAuth, getTicket);
+router.get("/get-ticket/", checkIsAuth, getTicket);
 module.exports = router;
 router.get("/chart-data", checkIsAuth, getChartData);
 module.exports = router;

@@ -870,7 +870,7 @@ exports.getTicketList = async (req, res) => {
 };
 exports.getTicket = async (req, res) => {
   try {
-    const Id = req.params.id;
+    const Id = req.query.id;
     if (Id) {
       const ticket = await Ticket.findOne({ _id: Id }).populate("movieShowId");
       console.log(ticket);
