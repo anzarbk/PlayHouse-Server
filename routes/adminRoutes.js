@@ -6,6 +6,7 @@ const {
   getAlltheatre,
   getTheatreOnlyData,
   getAdminChart,
+  getAdminTickets,
 } = require("../controllers/theatreController");
 
 const router = require("express").Router();
@@ -21,4 +22,6 @@ module.exports = router;
 router.get("/theatre-only-data/:id", getTheatreOnlyData);
 module.exports = router;
 router.get("/get-admin-chart", getAdminChart);
+module.exports = router;
+router.get("/get-admin-tickets", getAdminTickets);
 module.exports = router;

@@ -30,6 +30,7 @@ const {
   deleteTicket,
   getTicketList,
   getTicket,
+  getTicketTheatre,
 } = require("../controllers/theatreController");
 const {
   createMovie,
@@ -103,7 +104,9 @@ router.patch("/ticket", checkIsAuth, createTicket);
 module.exports = router;
 router.get("/get-tickets", checkIsAuth, getTicketList);
 module.exports = router;
-router.get("/get-ticket/", checkIsAuth, getTicket);
+router.get("/get-ticket?id", checkIsAuth, getTicket);
+module.exports = router;
+router.get("/get-tickets-theatre", checkIsAuth, getTicketTheatre);
 module.exports = router;
 router.get("/chart-data", checkIsAuth, getChartData);
 module.exports = router;

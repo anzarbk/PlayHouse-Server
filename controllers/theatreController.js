@@ -795,6 +795,7 @@ exports.deleteTicket = async (req, res) => {
   try {
     const { ticketId, showId } = req.body;
     const ticket = await Ticket.findOne({ _id: ticketId });
+    console.log(ticket);
     const price = ticket.newAmount;
     const seatArray = ticket.seatNameArray;
     console.log(price);
@@ -814,8 +815,8 @@ exports.deleteTicket = async (req, res) => {
     console.log("user-wallet", user);
     const deleteTicket = await Ticket.findByIdAndDelete(ticketId);
     const shows = await Show.findOne({ _id: showId });
-    // console.log(shows);
-    const seat = shows.screen.seatCharter;
+    console.log(shows);
+    const seat = shows?.screen?.seatCharter;
     // console.log(seat);
 
     const results = seatArray.map((element) => isElementInArray(element, seat));
@@ -887,6 +888,33 @@ exports.getTicket = async (req, res) => {
     console.log(error);
   }
 };
+exports.getTicketTheatre = async (req, res) => {
+  try {
+    const userId = req.user._id.toString();
+    console.log(userId);
+    if (userId) {
+      const theatre = await Theatre.findOne({ user: userId });
+      console.log(theatre);
+      const theatreName = theatre.name;
+      console.log(theatreName);
+
+      const tickets = await Ticket.find({ movieTheatre: theatreName }).sort({
+        _id: -1,
+      });
+      console.log(tickets);
+      res.json({
+        status: "success",
+        tickets,
+      });
+    }
+  } catch (error) {
+    res.json({
+      status: "failed",
+      error,
+    });
+    console.log(error);
+  }
+};
 exports.getAdminChart = async (req, res) => {
   try {
     const userId = req.user._id.toString();
@@ -907,6 +935,22 @@ exports.getAdminChart = async (req, res) => {
         result,
       });
     }
+  } catch (error) {
+    res.json({
+      status: "failed",
+      error,
+    });
+    console.log(error);
+  }
+};
+exports.getAdminTickets = async (req, res) => {
+  try {
+    const tickets = await Ticket.find().sort({ _id: -1 });
+    console.log(tickets);
+    res.json({
+      status: "success",
+      tickets,
+    });
   } catch (error) {
     res.json({
       status: "failed",
