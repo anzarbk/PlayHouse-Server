@@ -794,6 +794,7 @@ exports.getSingleSeatChartByName = async (req, res) => {
 exports.deleteTicket = async (req, res) => {
   try {
     const { ticketId, showId } = req.body;
+    console.log(ticketId, showId);
     const ticket = await Ticket.findOne({ _id: ticketId });
     console.log(ticket);
     const price = ticket.newAmount;
@@ -872,6 +873,7 @@ exports.getTicketList = async (req, res) => {
 exports.getTicket = async (req, res) => {
   try {
     const Id = req.query.id;
+    console.log(req.query);
     if (Id) {
       const ticket = await Ticket.findOne({ _id: Id }).populate("movieShowId");
       console.log(ticket);
@@ -890,6 +892,8 @@ exports.getTicket = async (req, res) => {
 };
 exports.getTicketTheatre = async (req, res) => {
   try {
+    const { id } = req.params;
+    console.log(id);
     const userId = req.user._id.toString();
     console.log(userId);
     if (userId) {
@@ -898,9 +902,12 @@ exports.getTicketTheatre = async (req, res) => {
       const theatreName = theatre.name;
       console.log(theatreName);
 
-      const tickets = await Ticket.find({ movieTheatre: theatreName }).sort({
-        _id: -1,
-      });
+      const tickets = await Ticket.find({ movieTheatre: theatreName })
+        .sort({
+          _id: -1,
+        })
+        .skip((id - 1) * 5)
+        .limit(5);
       console.log(tickets);
       res.json({
         status: "success",
