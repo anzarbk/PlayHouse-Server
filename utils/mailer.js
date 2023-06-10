@@ -4,7 +4,6 @@ const SendEmail = async (email) => {
   const min = 100000; // the minimum 6-digit number
   const max = 999999; // the maximum 6-digit number
   const otp = Math.floor(Math.random() * (max - min + 1)) + min;
-  console.log(otp);
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -24,7 +23,6 @@ const SendEmail = async (email) => {
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
-        // throw new HttpException("something went wrong ", HttpStatus.FORBIDDEN);
       } else {
         console.log(info);
       }

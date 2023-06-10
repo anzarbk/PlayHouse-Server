@@ -5,10 +5,8 @@ const { SendEmail } = require("../utils/mailer");
 
 exports.nodeMailer = async (req, res, next) => {
   try {
-    console.log(req.body.dataV);
     const conformation = SendEmail(req.body.dataV);
   } catch (err) {
-    console.log(err);
     res.json({
       status: "error",
       message: err?.message,
@@ -23,22 +21,18 @@ exports.signup = async (req, res, next) => {
       return;
     }
     const verified = await FB.verifyToken(body.accessToken);
-    console.log(verified);
     const data = {
       userName: req.body.name,
       email: req.body.email,
       password: req.body.password,
-      // mobileNumber: req.body.phone,
     };
     const user = await User.create(data);
-    // const user = await User.findOne({ email: req.body.email });
     res.json({
       status: "success",
       token: body.accessToken,
       user,
     });
   } catch (err) {
-    console.log(err);
     res.json({
       status: "error",
       message: err?.message,
@@ -48,13 +42,11 @@ exports.signup = async (req, res, next) => {
 exports.refreshUser = async (req, res, next) => {
   try {
     const body = req.body;
-    console.log(req.body);
     if (!body.accessToken) {
       res.json({ status: "failed", message: "Token not found !" });
       return;
     }
     const verified = await FB.verifyToken(body.accessToken);
-    console.log(verified);
     const user = await User.findOne({ email: verified.email });
     res.json({
       status: "success",
@@ -62,7 +54,6 @@ exports.refreshUser = async (req, res, next) => {
       user,
     });
   } catch (err) {
-    console.log(err);
     res.json({
       status: "error",
       message: err?.message,
@@ -86,7 +77,6 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email }).select(
       "-password"
     );
-    console.log(user);
     if (user?.isBlocked) {
       return res.json({
         status: "error",
@@ -101,7 +91,6 @@ exports.login = async (req, res, next) => {
       });
     }
   } catch (err) {
-    console.log(err);
     res.json({
       status: "error",
       message: err?.message,
@@ -145,7 +134,6 @@ exports.googleSignup = async (req, res, next) => {
       token: accessToken,
     });
   } catch (err) {
-    console.log(err);
     res.json({
       status: "error",
       message: err?.message,
@@ -154,7 +142,6 @@ exports.googleSignup = async (req, res, next) => {
 };
 
 exports.checkIsAuth = async (req, res, next) => {
-  console.log("ansu");
   try {
     // Extract token
     const token = extractToken(req);
@@ -181,7 +168,6 @@ exports.checkIsAuth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    console.log(err);
     res.json({
       status: "failed",
       message: err?.message,

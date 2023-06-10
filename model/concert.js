@@ -19,24 +19,7 @@ const concertSchema = new mongoose.Schema({
   banner: {
     type: Array,
   },
-  //   show: {
-  //     type: [
-  //       {
-  //         movie: {
-  //           type: mongoose.Types.ObjectId,
-  //         },
-  //         time: {
-  //           type: Date,
-  //         },
-  //         screen: {
-  //           type: String,
-  //         },
-  //         Date: {
-  //           type: Date,
-  //         },
-  //       },
-  //     ],
-  //   },
+
   address: {
     type: [
       {

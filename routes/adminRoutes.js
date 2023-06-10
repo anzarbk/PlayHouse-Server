@@ -11,7 +11,6 @@ const {
 
 const router = require("express").Router();
 
-//  domain/admin/user-data
 
 router.get("/user-data", getUserData);
 module.exports = router;
@@ -23,5 +22,5 @@ router.get("/theatre-only-data/:id", getTheatreOnlyData);
 module.exports = router;
 router.get("/get-admin-chart/", getAdminChart);
 module.exports = router;
-router.get("/get-admin-tickets", getAdminTickets);
+router.get("/get-admin-tickets/:id", getAdminTickets);
 module.exports = router;

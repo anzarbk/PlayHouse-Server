@@ -26,24 +26,6 @@ const theatreSchema = new mongoose.Schema({
   banner: {
     type: String,
   },
-  // show: {
-  //   type: [
-  //     {
-  //       movie: {
-  //         type: mongoose.Types.ObjectId,
-  //       },
-  //       time: {
-  //         type: Date,
-  //       },
-  //       screen: {
-  //         type: String,
-  //       },
-  //       Date: {
-  //         type: Date,
-  //       },
-  //     },
-  //   ],
-  // },
   pincode: {
     type: String,
   },

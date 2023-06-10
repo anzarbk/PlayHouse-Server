@@ -23,19 +23,8 @@ exports.createTheatre = async (req, res) => {
       pincode: body.pinCode,
     };
     const theatreRedux = await Theatre.create(data);
-    // const userRedux = await User.updateOne(
-    //   { _id: id },
-    //   // {
-    //   //   $set: {
-    //   //     role: "theatre",
-    //   //   },
-    //   // },
-    //   { new: true, runValidators: true }
-    // );
-    // console.log(userRedux);
     res.json({
       status: "success",
-      // userRedux,
       theatreRedux,
     });
   } catch (error) {
@@ -43,15 +32,12 @@ exports.createTheatre = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.editTheatre = async (req, res) => {
   try {
     const body = req.body;
-    console.log(body);
     const id = req.user._id.toString();
-    console.log(id);
     const theatre = await Theatre.updateOne(
       { user: id },
       {
@@ -69,9 +55,7 @@ exports.editTheatre = async (req, res) => {
       },
       { new: true, runValidators: true }
     );
-    console.log(theatre);
     const theatreRedux = await Theatre.find({ user: id });
-    console.log(theatreRedux);
     res.json({
       status: "success",
       theatreRedux,
@@ -81,7 +65,6 @@ exports.editTheatre = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 
@@ -121,10 +104,8 @@ exports.theatreGetData = async (req, res) => {
   }
 };
 exports.getAlltheatre = async (req, res) => {
-  console.log("out");
   try {
     const theatre = await Theatre.find();
-    console.log(theatre);
     res.json({
       status: "success",
       theatre,
@@ -139,13 +120,10 @@ exports.getAlltheatre = async (req, res) => {
 
 exports.getTheatreOnlyData = async (req, res) => {
   const id = req.params.id;
-  console.log(req.params.id, "adsadasdasd");
   try {
     const theatre = await Theatre.findOne({ _id: id });
-    console.log(theatre, "qweqwe");
     const userId = theatre.user;
-    // let newTheatre;
-    // if (theatre.isBlocked) {
+
     const newTheatre = await Theatre.findOneAndUpdate(
       {
         _id: id,
@@ -164,29 +142,6 @@ exports.getTheatreOnlyData = async (req, res) => {
       },
       { new: true, runValidators: true }
     );
-    console.log(userRedux);
-    // } else {
-    //   newTheatre = await Theatre.findOneAndUpdate(
-    //     {
-    //       _id: id,
-    //     },
-    //     {
-    //       isBlocked: true,
-    //     },
-    //     { new: true }
-    //   );
-    //   const userRedux = await User.updateOne(
-    //     { _id: userId },
-    //     {
-    //       $set: {
-    //         role: "user",
-    //       },
-    //     },
-    //     { new: true, runValidators: true }
-    //   );
-    //   console.log(userRedux);
-    // }
-    console.log(newTheatre, "after");
 
     res.json({
       status: "success",
@@ -202,7 +157,6 @@ exports.getTheatreOnlyData = async (req, res) => {
 
 exports.createSeatCharter = async (req, res) => {
   try {
-    console.log(req.body);
     const userId = req.user._id.toString();
     const theatre = await Theatre.findOne({ user: userId });
     const theatreId = theatre._id;
@@ -222,13 +176,11 @@ exports.createSeatCharter = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 
 exports.updateSeatCharter = async (req, res) => {
   try {
-    // console.log(req.body);
     const seat = await SeatCharter.findOneAndUpdate(
       {
         _id: req.body.id,
@@ -240,15 +192,7 @@ exports.updateSeatCharter = async (req, res) => {
         },
       }
     );
-    console.log(seat);
-    // const userId = req.user._id.toString();
-    // const theatre = await Theatre.findOne({ user: userId });
-    // const theatreId = theatre._id;
-    // const seatCharter = await SeatCharter.create({
-    //   theatre: theatreId,
-    //   seatCharter: req.body.seats,
-    //   screenName: req.body.screenName,
-    // });
+
     res.json({
       status: "success",
       seat,
@@ -258,13 +202,11 @@ exports.updateSeatCharter = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getSeatChart = async (req, res) => {
   try {
     const seatcharter = await SeatCharter.find({ theatre: req.params.id });
-    console.log("asdasdas", seatcharter);
     res.json({
       status: "success",
       seatcharter,
@@ -274,12 +216,10 @@ exports.getSeatChart = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.createShow = async (req, res) => {
   try {
-    console.log(req.body, "qwe");
     if (
       !req.body.startate ||
       !req.body.endDate ||
@@ -312,17 +252,13 @@ exports.createShow = async (req, res) => {
         message: "Price should not less than 10 !",
       });
     }
-    const showsToCheck = await Show.find();
 
     const userId = req.user._id.toString();
     const theatre = await Theatre.findOne({ user: userId });
     const theatreId = theatre._id;
-    // console.log(theatreId, "ASDASDASDASD");
     const showTime = req.body.show;
     const dates = datesArr(req.body.startate, req.body.endDate);
-    // console.log(dates, "QWEQWEQWEQEWQQ");
     const seat = await SeatCharter.findOne({ screenName: req.body.screen });
-    console.log("seatArrays", seat);
     const showsToAdd = [];
     dates.forEach((date) => {
       showTime.forEach((time) => {
@@ -357,7 +293,6 @@ exports.createShow = async (req, res) => {
       status: "success",
     });
   } catch (error) {
-    console.log(error);
     res.json({
       status: "failed",
       error,
@@ -371,7 +306,6 @@ exports.getShowData = async (req, res) => {
     const theatre = await Theatre.findOne({ user: userId });
     const theatreId = theatre._id;
     const show = await Show.find({ theatre: theatreId });
-    console.log(show);
     if (show) {
       return res.json({
         status: "success",
@@ -383,15 +317,12 @@ exports.getShowData = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getShowDataById = async (req, res) => {
   try {
-    console.log(req.params.id);
     const id = req.params.id;
     const show = await Show.find({ _id: id }).populate();
-    console.log(show);
     if (show) {
       return res.json({
         status: "success",
@@ -403,13 +334,11 @@ exports.getShowDataById = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getDbMovie = async (req, res) => {
   try {
-    // const userId = req.user._id.toString();
-    const movies = await Movie.find();
+    const movies = await Movie.find().sort({ _id: -1 });
     if (movies) {
       return res.json({
         status: "success",
@@ -421,17 +350,14 @@ exports.getDbMovie = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getSpecificTheatre = async (req, res) => {
   const id = parseInt(req.params.id);
-  console.log(id);
 
   try {
     const userId = req.user._id.toString();
     const shows = await Show.find({ "movie.id": id }).populate("theatre");
-    console.log(shows);
     if (shows) {
       return res.json({
         status: "success",
@@ -443,22 +369,18 @@ exports.getSpecificTheatre = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.createTicket = async (req, res) => {
   try {
-    console.log("ticket requests", req.body);
     const userId = req.user._id.toString();
     const showId = req.body.show._id;
     if (
-      // !userId
       !req.body.orderID ||
       !userId ||
       !req.body.movieName ||
       !req.body.movieDate ||
       !req.body.movieTheatre ||
-      // !req.body.movieScreen ||
       !req.body.movieShowTime ||
       !req.body.newAmount ||
       !req.body.seatNameArray
@@ -481,10 +403,8 @@ exports.createTicket = async (req, res) => {
         newAmount: req.body.newAmount,
         seatNameArray: req.body.seatNameArray,
       });
-      // console.log("ticket", ticket);
       const show = req.body.show;
 
-      // console.log(showId);
       const seats = req.body.seats;
       for (let i = 0; i < seats.length; i++) {
         if (seats[i].isSelected) {
@@ -493,24 +413,19 @@ exports.createTicket = async (req, res) => {
         }
       }
 
-      // console.log("seat updated", seats);
       const shows = await Show.findOneAndUpdate(
         { _id: show._id },
         { screen: { seatCharter: seats } }
       );
-      // console.log(shows);
       const user1 = await User.findOne({ _id: userId });
       const walletAmount = user1.wallet;
-      console.log(walletAmount);
       const totalPrice = walletAmount - req.body.newAmount;
-      console.log(totalPrice);
       const user = await User.findOneAndUpdate(
         { _id: userId },
         {
           wallet: totalPrice,
         }
       );
-      console.log("user-wallet", user);
 
       res.json({
         status: "success",
@@ -532,10 +447,8 @@ exports.createTicket = async (req, res) => {
         newAmount: req.body.newAmount,
         seatNameArray: req.body.seatNameArray,
       });
-      console.log("ticket", ticket);
       const show = req.body.show;
 
-      // console.log(showId);
       const seats = req.body.seats;
       for (let i = 0; i < seats.length; i++) {
         if (seats[i].isSelected) {
@@ -544,12 +457,10 @@ exports.createTicket = async (req, res) => {
         }
       }
 
-      console.log("seat updated", seats);
       const shows = await Show.findOneAndUpdate(
         { _id: show._id },
         { screen: { seatCharter: seats } }
       );
-      console.log(shows);
 
       res.json({
         status: "success",
@@ -562,7 +473,6 @@ exports.createTicket = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getScreenData = async (req, res) => {
@@ -582,7 +492,6 @@ exports.getScreenData = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getChartData = async (req, res) => {
@@ -591,9 +500,7 @@ exports.getChartData = async (req, res) => {
     const theatre = await Theatre.findOne({ user: userId });
     const theatreName = theatre.name;
     const today = new Date();
-    console.log(today);
     const aWeekBefore = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    // console.log(aWeekBefore);
     var currentDate = new Date();
     var lastWeekStartDate = new Date(
       currentDate.getFullYear(),
@@ -631,7 +538,6 @@ exports.getChartData = async (req, res) => {
         },
       },
     ]);
-    console.log(tickets);
     res.json({
       status: "success",
       tickets,
@@ -641,13 +547,11 @@ exports.getChartData = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.createShowTime = async (req, res) => {
   try {
     const userId = req.user._id.toString();
-    console.log(req.body, userId);
     const theatre = await Theatre.findOne({ user: userId });
     const theatreId = theatre._id;
     if (theatreId) {
@@ -657,10 +561,8 @@ exports.createShowTime = async (req, res) => {
         startTime: req.body?.start,
         endTime: req.body?.end,
       };
-      console.log(data);
       const sTime = new showTime(data);
       await sTime.save();
-      console.log("asdasdas", sTime);
       res.json({
         status: "success",
       });
@@ -670,7 +572,6 @@ exports.createShowTime = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getShowTime = async (req, res) => {
@@ -690,18 +591,12 @@ exports.getShowTime = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.deleteScreen = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id, "asdasdasdas");
-    // const userId = req.user._id.toString();
-    // const theatre = await Theatre.findOne({ user: userId });
-    // const theatreId = theatre._id;
     const screen = await SeatCharter.deleteOne({ _id: id });
-    console.log(screen);
     res.json({
       status: "success",
       screen,
@@ -711,16 +606,11 @@ exports.deleteScreen = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.deleteShowTime = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id, "asdasdasdas");
-    // const userId = req.user._id.toString();
-    // const theatre = await Theatre.findOne({ user: userId });
-    // const theatreId = theatre._id;
     const sTime = await showTime.deleteOne({ _id: id });
     console.log(sTime);
     res.json({
@@ -738,13 +628,8 @@ exports.deleteShowTime = async (req, res) => {
 exports.deleteShow = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id, "asdasdasdas");
 
-    // const userId = req.user._id.toString();
-    // const theatre = await Theatre.findOne({ user: userId });
-    // const theatreId = theatre._id;
     const show = await Show.deleteOne({ _id: id });
-    console.log(show);
     res.json({
       status: "success",
       show,
@@ -754,7 +639,6 @@ exports.deleteShow = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getSingleSeatChart = async (req, res) => {
@@ -770,13 +654,11 @@ exports.getSingleSeatChart = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getSingleSeatChartByName = async (req, res) => {
   try {
     const Id = req.params.id;
-    console.log(Id);
     const seat = await SeatCharter.findOne({ screenName: Id });
 
     res.json({
@@ -788,24 +670,18 @@ exports.getSingleSeatChartByName = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.deleteTicket = async (req, res) => {
   try {
     const { ticketId, showId } = req.body;
-    console.log(ticketId, showId);
     const ticket = await Ticket.findOne({ _id: ticketId });
-    console.log(ticket);
     const price = ticket.newAmount;
     const seatArray = ticket.seatNameArray;
-    console.log(price);
     const userId = req.user._id.toString();
     const user1 = await User.findOne({ _id: userId });
     const walletAmount = user1.wallet;
-    console.log(walletAmount);
     const totalPrice = walletAmount + price;
-    console.log(totalPrice);
     const user = await User.findOneAndUpdate(
       { _id: userId },
       {
@@ -813,12 +689,9 @@ exports.deleteTicket = async (req, res) => {
       },
       { new: true }
     );
-    console.log("user-wallet", user);
     const deleteTicket = await Ticket.findByIdAndDelete(ticketId);
     const shows = await Show.findOne({ _id: showId });
-    console.log(shows);
     const seat = shows?.screen?.seatCharter;
-    // console.log(seat);
 
     const results = seatArray.map((element) => isElementInArray(element, seat));
     function isElementInArray(element, array) {
@@ -829,7 +702,6 @@ exports.deleteTicket = async (req, res) => {
       }
       return array;
     }
-    // console.log(results);
 
     const show = await Show.findOneAndUpdate(
       { _id: showId },
@@ -846,7 +718,6 @@ exports.deleteTicket = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getTicketList = async (req, res) => {
@@ -856,7 +727,6 @@ exports.getTicketList = async (req, res) => {
       const tickets = await Ticket.find({ userId: userId })
         .sort({ _id: -1 })
         .limit(5);
-      console.log(tickets);
       res.json({
         status: "success",
         tickets,
@@ -867,16 +737,13 @@ exports.getTicketList = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getTicket = async (req, res) => {
   try {
     const Id = req.query.id;
-    console.log(req.query);
     if (Id) {
       const ticket = await Ticket.findOne({ _id: Id }).populate("movieShowId");
-      console.log(ticket);
       res.json({
         status: "success",
         ticket,
@@ -887,20 +754,15 @@ exports.getTicket = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getTicketTheatre = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     const userId = req.user._id.toString();
-    console.log(userId);
     if (userId) {
       const theatre = await Theatre.findOne({ user: userId });
-      console.log(theatre);
       const theatreName = theatre.name;
-      console.log(theatreName);
 
       const tickets = await Ticket.find({ movieTheatre: theatreName })
         .sort({
@@ -908,7 +770,6 @@ exports.getTicketTheatre = async (req, res) => {
         })
         .skip((id - 1) * 5)
         .limit(5);
-      console.log(tickets);
       res.json({
         status: "success",
         tickets,
@@ -919,7 +780,6 @@ exports.getTicketTheatre = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getAdminChart = async (req, res) => {
@@ -936,7 +796,6 @@ exports.getAdminChart = async (req, res) => {
         { name: "Theatres", value: theatres },
         { name: "Movies", value: movies },
       ];
-      console.log(result);
       res.json({
         status: "success",
         result,
@@ -947,13 +806,15 @@ exports.getAdminChart = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };
 exports.getAdminTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find().sort({ _id: -1 });
-    console.log(tickets);
+    const { id } = req.params;
+    const tickets = await Ticket.find()
+      .sort({ _id: -1 })
+      .skip((id - 1) * 5)
+      .limit(5);
     res.json({
       status: "success",
       tickets,
@@ -963,6 +824,5 @@ exports.getAdminTickets = async (req, res) => {
       status: "failed",
       error,
     });
-    console.log(error);
   }
 };

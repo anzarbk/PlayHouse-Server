@@ -40,7 +40,6 @@ const {
 } = require("../controllers/movieController");
 const router = require("express").Router();
 
-// router.post("/auth/signup");
 router.patch("/profile", checkIsAuth, editProfile);
 module.exports = router;
 router.patch("/profile-image", checkIsAuth, editProfileImage);
